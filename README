@@ -1,0 +1,61 @@
+README for OATools
+
+Introduction
+============
+This is a collection of scripts that I use on my Linux machines. I license these scripts as GPLv3 (refer to the file COPYING)
+
+The Scripts
+===========
+I would classify them in categories:
+
+Qatar
+-----
+Scripts related to Qatar, the frequency (daily, weekly) is controlled in crontab.
+QatarNewspapers: Sends a daily email containing links to the pdf files of Arabic newspapers from Qatar.
+BCCMovies: Sends a weekly email of the movie times.
+
+Filenames
+---------
+Scripts to fix filenames.
+fixarabicfilename:
+fixarabicnumfilename:
+fixext:
+
+Utils
+-----
+rs
+run
+
+GPS
+---
+flight2coords
+garmin2kml
+gpx2kml
+kml2garmin
+
+Get
+---
+Get from the internet
+get-yt-pls
+getmbc
+getsite
+
+Audio
+-----
+m4b2mp3all
+rm2mp3
+mp3ize
+mp3merge
+whitenoise
+
+Compressed
+----------
+These scripts deal with compressed files.
+
+rar-max-del
+unrar-all
+unrarexec
+unzipall
+
+
+
