@@ -1,0 +1,9 @@
+#!/usr/bin/perl
+
+use qatarnewspapers;
+
+@a=qatarnewspapers::getnewspapers();
+foreach(@a){
+	print "$_\n";
+}
+

@@ -1,0 +1,66 @@
+#!/usr/bin/perl
+
+die "One argument required: a CSV file." unless (scalar @ARGV == 1);
+
+sub getdata
+{
+	my $line=shift;
+	@d=split(/,/,$line);
+	foreach(@d) {s/^"//;s/"$//;}
+	@d;
+}
+$filename=shift @ARGV;
+($tablename=$filename)=~s/\..+//;;
+
+open in,$filename;
+$line=<in>;
+chomp $line;
+@fields=getdata($line);
+foreach(@fields){s/[^a-zA-Z]//g;}
+for ($i=0; $i<(scalar @fields); $i++){
+	$length[$i]=0; $type[$i]='n';
+}
+
+while(<in>)
+{
+	chomp;
+	@l=getdata($_);
+	for ($i=0; $i<(scalar @fields); $i++){
+		$len= length($l[$i]);
+		$length[$i]=$len if ($len>$length[$i]);
+		$type[$i]='t' if (($l[$i]=~/[a-z]/) && ($type[$i] ne 't'));
+		$type[$i]='f' if (($l[$i]=~/\./) && ($type[$i] eq 'n'));
+	}
+}
+
+$types['f']='double';
+$types['n']='integer';
+$types['t']='varchar';
+
+print "create table $tablename (\n";
+@t=();
+for ($i=0; $i<(scalar @fields); $i++){
+	push @t,"   ".$fields[$i]." ".$types[$type[$i]]."(".$length[$i].")";
+}
+print join(",\n",@t);
+print "\n);\n";
+
+close in;
+
+open in,$filename;
+$line=<in>;
+while(<in>)
+{
+	chomp;
+	@l=getdata($_);
+	@t=();
+	for ($i=0; $i<(scalar @fields); $i++){
+		$l[$i]=~s/'/''/g;
+		$l[$i]="'$l[$i]'" if ($type[$i] eq 't');
+		push @t,$l[$i];
+	}
+	print "insert into $tablename (",join(",",@fields),") values (",join(",",@l),");\n";
+}
+
+
+

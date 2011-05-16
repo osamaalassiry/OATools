@@ -1,0 +1,12 @@
+#!/usr/bin/perl
+use utf8;
+
+foreach $fa (@ARGV){
+   $f=$fa;
+   for $a (0..9){
+      $b=chr(217).chr(160+$a);
+      $f=~s/$b/$a/eg;
+   } 
+
+   rename($fa,$f) if $f ne $fa;
+}

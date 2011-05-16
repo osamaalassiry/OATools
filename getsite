@@ -1,0 +1,2 @@
+#!/bin/bash
+wget --no-parent --no-clobber --html-extension --recursive --convert-links --page-requisites $1

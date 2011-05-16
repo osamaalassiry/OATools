@@ -1,0 +1,24 @@
+#!/usr/bin/perl
+
+use Text::Iconv;
+use File::Find;
+use Cwd;
+
+sub Win2UTF{
+	my $text=shift;
+	$c=Text::Iconv->new("cp1256","utf8");
+	$c->convert($text);
+}
+
+sub d{
+	my $file=$File::Find::name;
+#	exit if $file eq cwd;
+	my $f2=Win2UTF($file);
+	print "$file\t$f2\n";
+	rename $file,$f2;
+#	-d $file and d($file);
+	
+}
+
+
+find(\&d,cwd);

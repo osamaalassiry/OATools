@@ -1,0 +1,3 @@
+#!/bin/bash
+mp3wrap tmp.mp3 $1 $2
+ffmpeg -i tmp_MP3WRAP.mp3 -acodec copy $3 && rm tmp_MP3WRAP.mp3

@@ -1,0 +1,5 @@
+#!/usr/bin/perl
+
+$command=join(' ',@ARGV);
+exec "$command >/dev/null 2>/dev/null &";
+#print "Command:$command\nP:$params";

@@ -1,0 +1,2 @@
+#!/bin/bash
+gpsbabel -w -i garmin -f  usb -o kml -F $1

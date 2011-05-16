@@ -1,0 +1,58 @@
+#!/usr/bin/perl
+use LWP::Simple;
+use WWW::Mechanize;
+
+#$list='9D558D49CA734A02';
+while($list = shift @ARGV){
+
+$html=get 'http://www.youtube.com/view_play_list?p='.$list;
+$html=~s/\n/ /g;
+
+#$title=$1 if ($html=~/<h1>(.+?)<\/h1>/i);
+%yt=();
+
+while ($html=~s/\/watch\?v=(.+?)\&//i)
+{
+$yt{$1}=1;
+}
+
+@tt=();
+while ($html=~s/alt="(.+?)"//i)
+{
+push @tt,$1;
+}
+
+
+print $tt[0],"\n";
+mkdir($tt[0]);
+$i=1;
+
+for $l (keys %yt)
+{
+	print "$i>\n";
+	$fn="$tt[0]/$tt[$i].mp4";
+
+	if (-e $fn){
+		print "$fn exists\n";
+	}
+	else
+	{
+	print $l,"@",$tt[$i],"\n";
+	$m = 'WWW::Mechanize'->new;
+	$m->get("http://www.youtube.com/watch?v=$l&gl=US&hl=en");
+	($t) = $m->content =~ /, "t": "([^"]+)"/;
+	print "i=$i T=$t\n";
+	$m->get("http://www.youtube.com/get_video?video_id=$l&t=$t&fmt=18",
+		 ":content_file" => "$fn");
+	undef $m;
+	}
+	$i++;
+
+}
+
+
+
+
+
+
+}

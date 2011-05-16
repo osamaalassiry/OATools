@@ -1,0 +1,6 @@
+#!/bin/bash
+for f in "$@"
+do
+e=${f#*.}
+ffmpeg -i "$f" `basename "$f" $e`mp4
+done

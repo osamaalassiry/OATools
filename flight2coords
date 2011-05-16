@@ -1,0 +1,36 @@
+#!/usr/bin/perl
+use LWP::Simple;
+
+if ( $#ARGV!=1)
+{
+print <<There;
+Called with  $#ARGV parameters...
+Call with two parameters, flight code like QR and flight number like 48
+flight2coords QR 48 
+It would generate a file QR48.kml
+There
+
+}
+else
+{
+#Get script's path
+
+#Get flight path!
+$HTML=get "http://www.flightstats.com/go/FlightStatus/flightStatusByFlightPositionDetails.do?airlineCode=$ARGV[0]&flightNumber=$ARGV[1]";
+$HTML=~s/(\r|\n)/ /mg;
+$HTML=~s/\s+/ /g;
+$coords='';
+while($HTML=~s/(\d+)\s*km\)\s*<\/td>\s*<td>\s*([.0-9]+)\s*<\/td>\s*<td>\s*([.0-9]+)//){
+  $alt=$1*100;
+  $coords.= "$3,$2,$alt ";
+}
+
+#print $HTML;
+#Generate KML
+open in ,'Template.kml'; @t=<in>; close in;
+$text=join('',@t);
+$text=~s/\[PATH_COORDS\]/$coords/g;
+open out,">$ARGV[0]$ARGV[1].kml";
+print out $text;
+close out;
+}

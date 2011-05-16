@@ -1,0 +1,2 @@
+#!/bin/bash
+rar a -df -m5 "$1.rar" "$1"

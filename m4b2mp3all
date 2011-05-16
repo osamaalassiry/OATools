@@ -1,0 +1,6 @@
+#!/bin/bash
+for m4b in *.m4b
+do 
+	echo "$m4b"
+	ffmpeg -i "$m4b" -acodec libmp3lame -ar 22050 "${m4b}.mp3"
+done

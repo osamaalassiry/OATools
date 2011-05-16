@@ -1,0 +1,8 @@
+#!/bin/bash
+while [ "$1" ]
+do
+	dir=`basename "$1" .zip`
+	mkdir $dir
+	unzip $1 -d $dir
+	shift
+done

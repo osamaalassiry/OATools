@@ -1,0 +1,85 @@
+#!/usr/bin/perl
+
+use LWP::Simple;
+use Date::Format;
+use "qatarnewspapers.pm";
+
+$FROMEMAIL="";
+$TOEMAIL="";
+# Simple Email Function
+# ($to, $from, $subject, $message)
+sub sendEmail
+{
+my ($to, $from, $subject, $message) = @_;
+my $sendmail = '/usr/lib/sendmail';
+open(MAIL, "|$sendmail -oi -t");
+print MAIL "From: $from\n";
+print MAIL "To: $to\n";
+print MAIL "Subject: $subject\n\n";
+print MAIL "$message\n";
+close(MAIL);
+} 
+
+($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst)=localtime(time);$year+=1900;$mon+=1;
+$date="$mday/$mon/$year"; 
+
+@l=();
+
+push @l, "Wikipedia";
+$wpd=time2str('%B_%e',time);
+$wpd=~s/\s/_/g;
+push @l,'http://en.wikipedia.org/wiki/'.$wpd;
+$wpd=time2str('%B_%e',time+86400);
+$wpd=~s/\s/_/g;
+push @l,'http://en.wikipedia.org/wiki/'.$wpd;
+
+push @l,'';
+
+push @l,"Raya";
+$t=get "http://www.raya.com/Pages/home.aspx";
+while ($t=~s/href="(([^"]+?)\.pdf)"//){
+  $u=$1;
+  $u=~s/\s/%20/g;
+  push @l,"http://www.raya.com$u";
+}
+
+push @l,'';
+$dt=time2str("%Y%m%d",time);
+push @l,"Watan";
+$t=get "http://www.watanepaper.com/downloadpdf.aspx?name=Download&issue=$dt";
+
+while ($t=~s/href='(data(.+?)\.pdf)'//){
+  push @l,"http://www.watanepaper.com/$1";
+}
+
+push @l,'';
+push @l,'Alarab';
+$t=get 'GET http://www.alarab.qa/pdf_pages.php?date2='.time2str('%Y-%m-%d',time);
+$t=~s/(\r|\n)/ /g;
+$t=~s/\t/ /g;
+$t=~s/\w+="\d+"//g;
+$t=~s/\s+/ /g;
+$t=~s/ >/>/g;
+$t=~s/ </</g;
+$t=~s/> </></g;
+
+$i=1;
+while($t=~s/<a href="(.+?).pdf"//)
+{
+        push @l,"http://www.alarab.com.qa/admin/pdf/files/$1.pdf\n";
+}
+
+push @l,'';
+push @l,"Al-Sharq";
+$t=get "http://www.al-sharq.com/";
+while ($t=~s/href=("|')(\/pdfs\/files\/(.+?)\.pdf)$1//){
+  push @l,"http://www.al-sharq.com$2";
+}
+
+$m="News for today $date:\n";
+foreach $l (@l){
+  $m.="$l\n";
+}
+$m.=$W;
+
+sendEmail $FROMEMAIL,$TOEMAIL,"News for $date",$m;

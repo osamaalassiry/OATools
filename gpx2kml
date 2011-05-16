@@ -1,0 +1,2 @@
+#!/bin/bash
+gpsbabel -w -i gpx -f  $1 -o kml -F $1.kml
